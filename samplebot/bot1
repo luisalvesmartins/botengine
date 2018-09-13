@@ -1,0 +1,31 @@
+{ "class": "go.GraphLinksModel",
+  "linkFromPortIdProperty": "fromPort",
+  "linkToPortIdProperty": "toPort",
+  "modelData": {"position":"226.57858021813126 -17.09011361765306"},
+  "nodeDataArray": [ 
+{"text":"Hi {NAME}, do you prefer Blue or Red?", "figure":"RoundedRectangle", "fill":"#eeee00", "type":"CHOICE", "key":-5, "loc":"440 140", "size":"151 57", "parVar":"CHOICECOLOR", "parURL":"", "parKey":""},
+{"text":"Red is also a nice color", "figure":"RoundedRectangle", "fill":"lightyellow", "type":"MESSAGE", "key":-7, "loc":"310 280"},
+{"text":"Blue is also a nice color", "figure":"RoundedRectangle", "fill":"lightyellow", "type":"MESSAGE", "key":-8, "loc":"520 280"},
+{"text":"What is your name?", "type":"INPUT", "key":-2, "loc":"520 20", "parVar":"NAME", "parURL":"", "parKey":"", "parTyp":"", "parLMI":""},
+{"text":"Pick the color using natural language (LUIS)", "figure":"RoundedRectangle", "fill":"lightgreen", "type":"LUIS", "key":-6, "loc":"520 400", "parVar":"LUISOPTION", "parURL":"https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/", "parKey":"yourapp?subscription-key=yourkey", "parTyp":"", "parLMI":"0.6"},
+{"text":"You selected Blue", "type":"INPUT", "key":-9, "loc":"420 520"},
+{"text":"You selected Red", "type":"INPUT", "key":-10, "loc":"610 520"},
+{"text":"Can you repeat, please?", "figure":"RoundedRectangle", "fill":"lightyellow", "type":"MESSAGE", "key":-12, "loc":"790 420"},
+{"text":"Check if it's Luis", "figure":"Diamond", "fill":"lightskyblue", "type":"IF", "key":-4, "loc":"640 110", "parCon":"\"{NAME}\".toUpperCase()==\"LUIS\"", "size":"138 121.74600009918212"},
+{"text":"Hi Luis, this is a shortcut", "figure":"RoundedRectangle", "fill":"lightyellow", "type":"MESSAGE", "key":-11, "loc":"790 260"},
+{"text":"Some very exciting questions", "figure":"Circle", "fill":"#00AD5F", "type":"START", "key":-13, "loc":"380 40", "size":"118 110"}
+ ],
+  "linkDataArray": [ 
+{"from":-5, "to":-7, "fromPort":"", "toPort":"", "points":[439.9999999999998,168.49999999999986,439.9999999999998,178.49999999999986,439.9999999999998,215.11928812542283,310.00000000000017,215.11928812542283,310.00000000000017,251.73857625084582,310.00000000000017,261.7385762508458], "text":"Blue"},
+{"from":-5, "to":-8, "fromPort":"B", "toPort":"T", "points":[439.9999999999998,168.49999999999986,439.9999999999998,178.49999999999986,439.9999999999998,215.11928812542283,519.9999999999999,215.11928812542283,519.9999999999999,251.73857625084582,519.9999999999999,261.7385762508458], "text":"Red"},
+{"from":-4, "to":-5, "fromPort":"L", "toPort":"", "points":[571.0000000000001,110,561.0000000000001,110,543.25,110,543.25,139.99999999999986,525.4999999999998,139.99999999999986,515.4999999999998,139.99999999999986], "text":"false"},
+{"from":-8, "to":-6, "fromPort":"", "toPort":"T", "points":[519.9999999999999,298.2614237491538,519.9999999999999,308.2614237491538,519.9999999999999,336.7499999999999,520,336.7499999999999,520,365.23857625084605,520,375.23857625084605]},
+{"from":-6, "to":-9, "fromPort":"", "toPort":"", "points":[520,424.761423749154,520,434.761423749154,520,464.630711874577,420,464.630711874577,420,494.5,420,504.5], "text":"blue_intent"},
+{"from":-6, "to":-10, "fromPort":"", "toPort":"", "points":[520,424.761423749154,520,434.761423749154,520,464.630711874577,610,464.630711874577,610,494.5,610,504.5], "text":"red_intent"},
+{"from":-6, "to":-12, "fromPort":"", "toPort":"L", "points":[610.4164225284508,400,620.4164225284508,400,659.8274993896482,400,659.8274993896482,419.9999999999997,699.2385762508458,419.9999999999997,709.2385762508458,419.9999999999997], "text":"None"},
+{"from":-12, "to":-6, "fromPort":"R", "toPort":"T", "points":[870.7614237491537,419.9999999999997,880.7614237491537,419.9999999999997,880.7614237491537,365.23857625084605,700.3807118745768,365.23857625084605,520,365.23857625084605,520,375.23857625084605]},
+{"from":-2, "to":-4, "fromPort":"", "toPort":"T", "points":[585.994998931885,19.999999999999993,595.994998931885,19.999999999999993,640.0000000000001,19.999999999999993,640.0000000000001,29.56349997520446,640.0000000000001,39.12699995040893,640.0000000000001,49.12699995040893]},
+{"from":-4, "to":-11, "fromPort":"", "toPort":"T", "points":[709.0000000000001,110,719.0000000000001,110,790,110,790,170.8692881254229,790,231.73857625084582,790,241.73857625084582], "text":"true"},
+{"from":-11, "to":-6, "fromPort":"B", "toPort":"T", "points":[790,278.2614237491538,790,288.2614237491538,790,326.7499999999999,520,326.7499999999999,520,365.23857625084605,520,375.23857625084605]},
+{"from":-13, "to":-2, "fromPort":"", "toPort":"", "points":[431,40,441,40,442.5025005340576,40,442.5025005340576,20,444.00500106811523,20,454.00500106811523,20]}
+ ]}

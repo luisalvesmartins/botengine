@@ -1,0 +1,31 @@
+{
+  "name": "botengine",
+  "version": "1.0.0",
+  "description": "BotEngine",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "Luis Alves Martins",
+  "license": "MIT",
+  "engines": {
+    "node": ">=9.4"
+  },
+  "dependencies": {
+    "applicationinsights": "^1.0.4",
+    "azure-storage": "^2.10.1",
+    "botbuilder": "^4.0.0-preview1.2",
+    "botbuilder-ai": "^4.0.0-preview1.2",
+    "botbuilder-azure": "^4.0.0-preview1.2",
+    "botbuilder-dialogs": "^4.0.0-preview1.2",
+    "botframework-directlinejs": "^0.9.17",
+    "crypo": "^0.1.4",
+    "dotenv": "^6.0.0",
+    "dotenv-extended": "^2.0.2",
+    "node-eval": "^2.0.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2",
+    "restify": "^6.4.0",
+    "xhr2": "^0.1.4"
+  }
+}
