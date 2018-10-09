@@ -33,6 +33,16 @@ const userState  = new UserState(azureStorage);
 adapter.use(new BotStateSet(convoState, userState));
 const dialogs = new botbuilder_dialogs.DialogSet();
 
+//FOR CONVERSATION LOGGING
+var tableSvc = storage.createTableService();
+tableSvc.createTableIfNotExists(process.env.LOGTABLE || 'botlog', function(error, result, response) {
+	if (error) {
+		console.log("ERROR");
+	  // result contains true if created; false if already exists
+	}
+  });
+var entGen = storage.TableUtilities.entityGenerator;
+
 //INITIALIZE CONTAINERS
 var blobService = storage.createBlobService();
 var containerName = process.env.BOTFLOW_CONTAINER;
@@ -311,6 +321,22 @@ async function main(context){
 			return;
 		}
 
+		//ADD LOG 
+		var task = {
+			PartitionKey: entGen.String(context.activity.channelId),
+			RowKey: entGen.String(context.activity.id + "|" + context.activity.conversation.id),
+			description: entGen.String(context.activity.text),
+			botPointer: entGen.Int32(botPointer),
+			botName: entGen.String(botName)
+		};
+		tableSvc.insertEntity(process.env.LOGTABLE || 'botlog',task, function (error, result, response) {
+			if(error){
+			  // Entity inserted
+			  console.log("No save")
+			  console.log(task);
+			  }
+		});
+		
 		await lambotenginecore.PreProcessing(state,myBot,botPointer,context.activity.text,io)
 
 

@@ -101,14 +101,25 @@ module.exports={
             var body=await request(URL);
             //this.log(body);
             var LUISResult=JSON.parse(body);
+            if (LUISResult.topScoringIntent){
+
             var intent=LUISResult.topScoringIntent.intent;
     
             var parLMI= myBot[botPointer].parLMI;
             this.log("INTENT:" + intent + "LMI:" + parLMI); 
+            this.log(JSON.stringify(LUISResult)); //STORE var_entities with LUISResult.entities
+            if (myBot[botPointer].parVar)
+            {
+                UserActivityResults[myBot[botPointer].parVar + ".entities"]=JSON.stringify(LUISResult.entities);
+                state.UserActivityResults=UserActivityResults;
+            }
             if (parLMI)
                 if (LUISResult.topScoringIntent.score<Number(parLMI)){
                     var intent="None";
                 }
+            }
+            else
+                intent="None";
             var option=this.getNextOptionFromText(myBot[botPointer],intent);
             if (option==-1)
             {
@@ -212,10 +223,7 @@ module.exports={
         
         var currentThread=myBot[botPointer];
         var messageToDisplay=currentThread.text;
-        //REPLACE { } VARIABLES WITH USER ENTRIES
-        for(var key in UserActivityResults){
-            messageToDisplay=messageToDisplay.replace("{" + key + "}",UserActivityResults[key]);
-        }
+        messageToDisplay=this.replaceVars(messageToDisplay,UserActivityResults);
         this.log("THREAD:" + currentThread.type);
         var messageToSpeak=messageToDisplay;
         switch (currentThread.type) {
@@ -233,6 +241,26 @@ module.exports={
                 break;
             case "LUIS":
                 await context.sendActivity(messageToDisplay, messageToSpeak, 'expectingInput');
+                break;
+            case "API":
+                var parCleaned=this.replaceVars(currentThread.parPar,UserActivityResults);
+                var result="";
+                switch (currentThread.parAPO) {
+                    case "MessageContent":
+                        //DISPLAY THE MESSAGE
+                        messageToDisplay=this.executeFunctionByName(currentThread.parAPI,global,parCleaned);
+                        await context.sendActivity(messageToDisplay, messageToDisplay, 'expectingInput');
+                        break;
+                    case "Variable":
+                        //STORE IT INTO THE VARS
+                        result=this.executeFunctionByName(currentThread.parAPI,global,parCleaned);
+                        break;
+                    default:
+                        //JUST EXECUTE IT
+                        this.executeFunctionByName(currentThread.parAPI,global,parCleaned);
+                        break;
+                }
+                botPointer=await this.MoveBotPointer(myBot,botPointer,result,UserActivityResults,state,io);
                 break;
             case "MESSAGE":
                 await context.sendActivity(messageToDisplay, messageToSpeak, 'expectingInput');
@@ -278,7 +306,25 @@ module.exports={
                 break;
         }
     },
-    
+
+    replaceVars:function(messageToDisplay, UserActivityResults){
+        //REPLACE { } VARIABLES WITH USER ENTRIES
+        for(var key in UserActivityResults){
+            messageToDisplay=messageToDisplay.replace("{" + key + "}",UserActivityResults[key]);
+        }
+        return messageToDisplay;
+    },
+
+    executeFunctionByName:function(functionName, context /*, args */) {
+        var args = Array.prototype.slice.call(arguments, 2);
+        var namespaces = functionName.split(".");
+        var func = namespaces.pop();
+        for(var i = 0; i < namespaces.length; i++) {
+          context = context[namespaces[i]];
+        }
+        return context[func].apply(context, args);
+      },
+
     WriteBotControl:function(storage,session, savedAddress){
         var b=JSON.stringify(savedAddress);
         //WRITE IT IN AZURE STORAGE
