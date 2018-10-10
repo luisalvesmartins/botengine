@@ -1,0 +1,15 @@
+{
+    "name": "http://localhost:3978",
+    "description": "",
+    "secretKey": "",
+    "services": [
+        {
+            "appId": "4419e124-95e7-469b-a0fe-c2234491b5cb",
+            "id": "1e234b30-cbec-11e8-a7b2-39ef2cd5b08d",
+            "type": "endpoint",
+            "appPassword": "msSNN272-=mmzkoRVRZ15%=",
+            "endpoint": "http://localhost:3978/api/messages",
+            "name": "http://localhost:3978/api/messages"
+        }
+    ]
+}

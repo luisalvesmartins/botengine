@@ -1,4 +1,5 @@
 const { QnAMaker } = require('botbuilder-ai');
+
 module.exports={
 
     convertDiagramToBot: function(diagram)
@@ -73,17 +74,19 @@ module.exports={
         return MessageFactory.suggestedActions(suggestedActions, title);
     },
     
-    MoveBotPointer:async function(myBot,botPointer,lastMessage,UserActivityResults,state,io)
+    MoveBotPointer:async function(myBot,botPointer,lastMessage,UserActivityResults,io,state)
     {
+        console.log("MOVEBOTPOINTER")
+        console.log(myBot[botPointer].type)
+        console.log("LASTMESSAGE");
+        console.log(lastMessage)
         //MOVENEXT
         //IF THIS IS LUIS, need to process it first
         if (myBot[botPointer].type=="IF")
         {
             var ifCond=myBot[botPointer].parCon;
             this.log("IF ORIGINAL:" + ifCond);
-            for(var key in UserActivityResults){
-                ifCond=ifCond.replace("{" + key + "}",UserActivityResults[key]);
-            }
+            ifCond=this.replaceVars(ifCond,UserActivityResults);
             this.log("IF:" + ifCond);
             const nodeeval=require('node-eval');
             var result=nodeeval(ifCond);
@@ -111,7 +114,7 @@ module.exports={
             if (myBot[botPointer].parVar)
             {
                 UserActivityResults[myBot[botPointer].parVar + ".entities"]=JSON.stringify(LUISResult.entities);
-                state.UserActivityResults=UserActivityResults;
+                await state.setUserActivityResults(UserActivityResults);
             }
             if (parLMI)
                 if (LUISResult.topScoringIntent.score<Number(parLMI)){
@@ -141,6 +144,7 @@ module.exports={
                 }
                 else
                 {
+                    this.log("SEVERAL OPTIONS TO CHOOSE:" + lastMessage)
                     var option=this.getNextOptionFromText(myBot[botPointer],lastMessage);
                     if (option==-1)
                     {
@@ -152,12 +156,11 @@ module.exports={
                 }
             
         }
-        state.pointer=botPointer;
-        state.pointerKey=myBot[botPointer].key;
+        await state.setBotPointer(botPointer,myBot[botPointer].key);
     
         //SEND THE MESSAGE TO THE HTML CLIENT TO UPDATE THE POSITION
         if (io)
-            io.in(state.session).emit('updateDesigner',myBot[botPointer].key);
+            io.in(await state.getSession()).emit('updateDesigner',myBot[botPointer].key);
 
         return botPointer;
     },
@@ -187,7 +190,7 @@ module.exports={
             blobName,
             function(err, blobContent, blob) {
                 if (err) {
-                    this.error("07:Couldn't download blob " + blobName);
+                    console.log("07:Couldn't download blob " + blobName);
                     this.error(err);
                     callback("");
                 } else {
@@ -216,11 +219,10 @@ module.exports={
         console.log(" ERROR:" + message);
     },
     
-    RenderConversationThread: async function (storage, state, session, context, dc, myBot,io)
+    RenderConversationThread: async function (context, myBot,io ,state)
     {
-        var UserActivityResults = state.UserActivityResults === undefined ? state.UserActivityResults={} : state.UserActivityResults;
-        var botPointer = state.pointer === undefined ? state.pointer=0 : state.pointer;
-        
+        var UserActivityResults=await state.getUserActivityResults();
+        var botPointer = await state.getBotPointer();
         var currentThread=myBot[botPointer];
         var messageToDisplay=currentThread.text;
         messageToDisplay=this.replaceVars(messageToDisplay,UserActivityResults);
@@ -231,13 +233,12 @@ module.exports={
                 await context.sendActivity(this.getSuggestedActions(messageToDisplay,currentThread.next));
                 break;
             case "IF":
-                botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,state,io);
+                botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,io,state);
     
-                await this.RenderConversationThread(storage, state, session, context, dc, myBot,io);
+                await this.RenderConversationThread(context, myBot,io,state);
                 break;
             case "INPUT":
                 await context.sendActivity(messageToDisplay, messageToSpeak, 'expectingInput');
-                //await dc.prompt('textPrompt', messageToDisplay);
                 break;
             case "LUIS":
                 await context.sendActivity(messageToDisplay, messageToSpeak, 'expectingInput');
@@ -260,13 +261,13 @@ module.exports={
                         this.executeFunctionByName(currentThread.parAPI,global,parCleaned);
                         break;
                 }
-                botPointer=await this.MoveBotPointer(myBot,botPointer,result,UserActivityResults,state,io);
+                botPointer=await this.MoveBotPointer(myBot,botPointer,result,UserActivityResults,io,state);
                 break;
             case "MESSAGE":
                 await context.sendActivity(messageToDisplay, messageToSpeak, 'expectingInput');
-                botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,state,io);
+                botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,io,state);
         
-                await this.RenderConversationThread(storage, state, session, context, dc, myBot,io);
+                await this.RenderConversationThread(context, myBot,io,state);
                 break;
             case "QNA":
                 const qnaMaker = new QnAMaker(
@@ -288,21 +289,21 @@ module.exports={
                     }
                 }
 
-                botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,state,io);
+                botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,io,state);
         
-                await this.RenderConversationThread(storage, state, session, context, dc, myBot,io);
+                await this.RenderConversationThread(context, myBot,io,state);
                 break;
             case "START":
                 await context.sendActivity(messageToDisplay, messageToSpeak, 'expectingInput');
     
-                botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,state,io);
+                botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,io,state);
         
-                await this.RenderConversationThread(storage, state, session, context, dc, myBot,io);
+                await this.RenderConversationThread(context, myBot,io,state);
                 break;
         
             default:
                 await context.sendActivity(messageToDisplay, messageToSpeak, 'expectingInput');
-                botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,state,io);
+                botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,io,state);
                 break;
         }
     },
@@ -330,31 +331,36 @@ module.exports={
         //WRITE IT IN AZURE STORAGE
         var blobService = storage.createBlobService();
         var containerName = process.env.BOTFLOW_CONTAINER_CONTROL;
+        try {
             blobService.createBlockBlobFromText(
-            containerName,
-            session,
-            b,
-            function(error, result, response){
-                if(error){
-                    this.error("06:Couldn't upload string");
-                    this.error(error);
-                }
-            });
+                containerName,
+                session,
+                b,
+                function(error, result, response){
+                    if(error){
+                        this.error("06:Couldn't upload string");
+                        this.error(error);
+                    }
+                });
+                
+        } catch (error) {
+            this.error("06.A:Couldn't save WriteBotControl");
+        }
     },
     
     PreProcessing:async function(state,myBot,botPointer,messageText,io){
-        var UserActivityResults = state.UserActivityResults === undefined ? state.UserActivityResults={} : state.UserActivityResults;
+        var userActivityResults=await state.getUserActivityResults();
     
         //STORE THE ACTUAL RESULT IN THE VARIABLE
         if (myBot[botPointer].parVar)
         {
-            UserActivityResults[myBot[botPointer].parVar]=messageText;
-            this.log("Results:" + JSON.stringify(UserActivityResults));
-            state.UserActivityResults=UserActivityResults;
+            userActivityResults[myBot[botPointer].parVar]=messageText;
+            this.log("Results:" + JSON.stringify(userActivityResults));
+            await state.setUserActivityResults(userActivityResults);
         }
     
         //MOVE IT TO THE NEXT
-        botPointer=await this.MoveBotPointer(myBot,botPointer,messageText,UserActivityResults,state,io);
+        await this.MoveBotPointer(myBot,botPointer,messageText,userActivityResults,io,state);
     }
     
     };
