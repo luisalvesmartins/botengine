@@ -1,5 +1,3 @@
-const lambotenginecore=require('./lambotenginecore');
-
 class stateObject{
 	constructor(conversationState){
 		this.conversationState=conversationState;
@@ -40,7 +38,7 @@ class stateObject{
     {
         var session=await this.session.get(this.context);
 		if (!session){
-			session=lambotenginecore.guid();
+			session=this.guid();
             await this.setSession(session);
         }
         return session;
@@ -61,5 +59,12 @@ class stateObject{
     async saveChanges(){
         await this.conversationState.saveChanges(this.context);
     }
+    guid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+    }
+
 }
 exports.stateObject=stateObject;

@@ -28,18 +28,9 @@ class mainBot {
 			await this.state.saveChanges();
 		}
 
-        var myBot = await lambotenginecore.AsyncPromiseReadBotFromAzure(storage,botName + ".bot");
-
-		var botPointer= await this.state.getBotPointer();
-		if (botPointer==-1){
-            botPointer=-1;
-			botPointer=lambotenginecore.getBotPointerOfStart(myBot);
-			await this.state.setBotPointer(botPointer,myBot[botPointer].key);
-		}
-
 		var session = await this.state.getSession();
-        var userActivityResults=await this.state.getUserActivityResults();
-        await this.state.saveChanges();
+		var userActivityResults=await this.state.getUserActivityResults();
+
 
 		var savedAddress={
 			activityId: context.activity.id,
@@ -58,6 +49,16 @@ class mainBot {
 				"\n\nPress the Start Sync button and enter the Session GUID\n\n" + session + "\n\n in the prompt.\n\nUse #BOT <name> to change, #DATA to display collected data");
 		} else
 		if (context.activity.type === 'message') {
+			var myBot = await lambotenginecore.AsyncPromiseReadBotFromAzure(storage,botName + ".bot");
+
+			var botPointer= await this.state.getBotPointer();
+			if (botPointer==-1){
+				botPointer=-1;
+				botPointer=lambotenginecore.getBotPointerOfStart(myBot);
+				await this.state.setBotPointer(botPointer,myBot[botPointer].key);
+			}
+
+
 			//PROCESS SPECIAL RESPONSE
 			if (context.activity.text.toUpperCase().startsWith("#BOT "))
 			{
@@ -110,8 +111,8 @@ class mainBot {
 
             await lambotenginecore.RenderConversationThread(context, myBot,io,this.state)
 
+			await this.state.saveChanges();
 		}
-        await this.state.saveChanges();
 	}
 }
 

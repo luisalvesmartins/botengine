@@ -35,17 +35,17 @@ else{
         appPassword: process.env.MICROSOFT_APP_PASSWORD
     });
 
-	// // Catch-all for any unhandled errors in your bot.
-	// adapter.onTurnError = async (context, error) => {
-	// 	// This check writes out errors to console log .vs. app insights.
-	// 	console.error(`\n [onTurnError]: ${ error }`);
-	// 	// Send a message to the user
-	// 	context.sendActivity(`Oops. Something went wrong!`);
-	// 	// Clear out state
-	// 	await convoState.clear(context);
-	// 	// Save state changes.
-	// 	await convoState.saveChanges(context);
-	// };	
+	// Catch-all for any unhandled errors in your bot.
+	adapter.onTurnError = async (context, error) => {
+		// This check writes out errors to console log .vs. app insights.
+		console.error(`\n [onTurnError]: ${ error }`);
+		// Send a message to the user
+		context.sendActivity(`Oops. Something went wrong!`);
+		// Clear out state
+		await convoState.clear(context);
+		// Save state changes.
+		await convoState.saveChanges(context);
+	};	
 }
 
 //MEMORY: (this is a demo)

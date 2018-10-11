@@ -76,10 +76,6 @@ module.exports={
     
     MoveBotPointer:async function(myBot,botPointer,lastMessage,UserActivityResults,io,state)
     {
-        console.log("MOVEBOTPOINTER")
-        console.log(myBot[botPointer].type)
-        console.log("LASTMESSAGE");
-        console.log(lastMessage)
         //MOVENEXT
         //IF THIS IS LUIS, need to process it first
         if (myBot[botPointer].type=="IF")
@@ -204,14 +200,7 @@ module.exports={
         if (typeof value === 'object') { return {...value}; }
         return value;
     },
-    
-    guid:function() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-          return v.toString(16);
-        });
-      },
-    
+   
     log:function(message){
         console.log("  log:" + message);
     },
