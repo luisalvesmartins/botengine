@@ -40,12 +40,27 @@ Configuration:
 ~~~~
 CONSOLE=NO|YES - for development
 AZURE_STORAGE_CONNECTION_STRING=...
-BOTFLOW_CONTAINER=<name>
-BOTFLOW_CONTAINER_CONTROL=<name>
+BOTFLOW_CONTAINER=<azure blob container name>
+BOTFLOW_CONTAINER_CONTROL=<azure blob container name>
 MICROSOFT_APP_ID=<GUID>
 MICROSOFT_APP_PASSWORD=<PASS>
+BOTNAME=<bot loaded by default>
+LOGTABLE=<azure table name for conversation logging>
 
 Bot.html should have the directline key changed.
+~~~~
+
+An example would be:
+~~~~
+CONSOLE=NO
+AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=https;AccountName=<youraccount>;AccountKey=<youraccountkey>;
+BOTFLOW_CONTAINER=botflows
+MICROSOFT_APP_ID=<guid>
+MICROSOFT_APP_PASSWORD=<the pass>
+botId=BotId
+BOTNAME=bot1
+LOGTABLE=botlog
+BOTFLOW_CONTAINER_CONTROL=botcontrol
 ~~~~
 
 ### SAMPLE INIT FILES
@@ -56,7 +71,7 @@ This two files should be uploaded to the Azure Storage BOTFLOW_CONTAINER defined
 
 ### SITE
 
-The site will be available on http://localhost:port/site/bot.html
+The site will be available on http://localhost:port/sites/bot.html 
 
 ### RUNTIME
 
