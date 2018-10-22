@@ -119,7 +119,7 @@ class mainBot {
 			if (context.activity.name=="playFromStep")
 			{
 				console.log("value" + context.activity.value)
-				botName=context.activity.botname.botName;
+				botName=context.activity.value.botName;
 				await this.state.setBotName(botName);
 
 				var myBot = await lambotenginecore.AsyncPromiseReadBotFromAzure(storage,botName + ".bot");
