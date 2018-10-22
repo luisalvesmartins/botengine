@@ -315,28 +315,6 @@ module.exports={
         return context[func].apply(context, args);
     },
 
-    WriteBotControl:function(storage,session, savedAddress){
-        var b=JSON.stringify(savedAddress);
-        //WRITE IT IN AZURE STORAGE
-        var blobService = storage.createBlobService();
-        var containerName = process.env.BOTFLOW_CONTAINER_CONTROL;
-        try {
-            blobService.createBlockBlobFromText(
-                containerName,
-                session,
-                b,
-                function(error, result, response){
-                    if(error){
-                        this.error("06:Couldn't upload string");
-                        this.error(error);
-                    }
-                });
-                
-        } catch (error) {
-            this.error("06.A:Couldn't save WriteBotControl");
-        }
-    },
-    
     PreProcessing:async function(state,myBot,botPointer,messageText){
         var userActivityResults=await state.getUserActivityResults();
     

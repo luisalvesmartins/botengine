@@ -63,12 +63,6 @@ blobService.createContainerIfNotExists(process.env.BOTFLOW_CONTAINER, function(e
 		console.error(err);
 	}
 });
-blobService.createContainerIfNotExists(process.env.BOTFLOW_CONTAINER_CONTROL, function(err, result, response) {
-	if (err) {
-		console.log("ERROR:Couldn't create container %s", containerName);
-		console.error(err);
-	}
-});
 //#endregion
    
  
@@ -175,63 +169,5 @@ else
 				}
 			});
     });
-    server.get('/api/botcontrol', (req, res) => {
-		var jsonString = '';
-
-		var q=url.parse(req.url,true);
-		var session=q.query["session"];
-
-		lambotenginecore.log("BOTCONTROL:" + session);
-		
-		//READ IT FROM AZURE STORAGE
-		var blobService = storage.createBlobService();
-		var containerName = process.env.BOTFLOW_CONTAINER_CONTROL;
-		var blobName=session;
-		blobService.getBlobToText(
-		containerName,
-		blobName,
-		function(err, blobContent, blob) {
-			if (err) {
-				lambotenginecore.error("Couldn't download blob " + blobName);
-				lambotenginecore.error(err);
-			} else {
-				lambotenginecore.log("Sucessfully downloaded blob " + blobName);
-				lambotenginecore.log(blobContent);
-
-				res.writeHead(200, {'Content-Type': 'text/plain'});	
-				res.end(blobContent);
-				return;
-			}
-		});
-	});
-
-	//var savedAddress;
-	server.get('/api/playStep', async (req, res) => {
-		// Lookup previously saved conversation reference
-		//const reference = await findReference(req.body.refId);
-		var q=url.parse(req.url,true);
-		var m=q.query["key"];
-		var botName=q.query["bot"];
-		//var session=q.query["session"];
-		var conversationReference=JSON.parse(q.query["cr"]);
-		// Proactively notify the user
-		var myBot=await lambotenginecore.AsyncPromiseReadBotFromAzure(storage, botName + ".bot");
-		var botPointer=lambotenginecore.getBotPointerIndexFromKey(myBot,m);
-
-		adapter.continueConversation(conversationReference, async (context) => {
-			let convoState
-			convoState= new ConversationState(azureStorage);
-
-			var state=new stateObject(convoState);
-			state.context=context;
-			await state.setBotPointer(botPointer,m);
-			await state.saveChanges();
-
-			await lambotenginecore.RenderConversationThread(context, myBot,io,state);
-		});
-
-		res.send(200);
-
-	});
 }
 //#endregion

@@ -28,25 +28,11 @@ class mainBot {
 			await this.state.saveChanges();
 		}
 
-		var session = await this.state.getSession();
 		var userActivityResults=await this.state.getUserActivityResults();
-
-
-		var savedAddress={
-			activityId: context.activity.id,
-			user: lambotenginecore.shallowCopy(context.activity.from),
-			bot: lambotenginecore.shallowCopy(context.activity.recipient),
-			conversation: lambotenginecore.shallowCopy(context.activity.conversation),
-			channelId: context.activity.channelId,
-			serviceUrl: context.activity.serviceUrl
-        };
-        
-		//WORKING ON REMOVING THIS FROM AZURE STORAGE AND USING ONLY THE SESSION
-		lambotenginecore.WriteBotControl(storage, session,savedAddress);
-
+      
 		if (context.activity.type === 'conversationUpdate' && context.activity.membersAdded[0].name !== 'Bot') {
 			await context.sendActivity(`## Welcome to the Designer Bot!\n\nCurrent bot: ` + botName.replace(".bot","") + "\n\n"  + 
-				"\n\nPress the Start Sync button and enter the Session GUID\n\n" + session + "\n\n in the prompt.\n\nUse #BOT <name> to change, #DATA to display collected data");
+				"Use #BOT <name> to change, #DATA to display collected data");
 		} else
 		if (context.activity.type === 'message') {
 			await context.sendActivity({ type: 'typing' });
@@ -75,13 +61,6 @@ class mainBot {
 
 				return;
 			}
-			if (context.activity.text.toUpperCase().startsWith("#SESSION "))
-			{
-				session=context.activity.text.substring(9);
-				await this.state.setSession(session);
-				await context.sendActivity("Session changed to " + session)
-				return;
-			}
 			if (context.activity.text.toUpperCase().startsWith("#DATA"))
 			{
 				await context.sendActivity("Data collected: " + JSON.stringify(userActivityResults));
@@ -89,7 +68,7 @@ class mainBot {
 			}
 			if (context.activity.text.toUpperCase()=="#DEBUG")
 			{
-				await context.sendActivity("Bot:" + botName + "\n\nSession:" + session + "\n\nData collected: " + JSON.stringify(userActivityResults));
+				await context.sendActivity("Bot:" + botName + "\n\nData collected: " + JSON.stringify(userActivityResults));
 				return;
 			}
 
@@ -119,8 +98,6 @@ class mainBot {
 		if (context.activity.type === 'event') {
 			if (context.activity.name=="playFromStep")
 			{
-				console.log("VALUE")
-				console.log(context.activity.value)
 				botName=context.activity.value.botName;
 				await this.state.setBotName(botName);
 

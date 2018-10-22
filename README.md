@@ -1,8 +1,8 @@
 # botengine
 
-Design and debug visually your bot conversations. Using Azure, Node, Bot Framework v4 (GA), GoJS and SocketIO to keep the designer in sync with the backend.
+Design and debug visually your bot conversations. Using Azure, Node, Bot Framework v4 (GA), GoJS and bot backchannel to keep the synchronization with the frontend.
 
-The conversation is synchronized with the visual designer.
+The conversation is synchronized with the visual designer:
 When a bot is loaded in the conversation, it is loaded in the designer. 
 When the activity changes in the bot, it reflects in the designer.
 
@@ -41,7 +41,6 @@ Configuration:
 CONSOLE=NO|YES - for development
 AZURE_STORAGE_CONNECTION_STRING=...
 BOTFLOW_CONTAINER=<azure blob container name>
-BOTFLOW_CONTAINER_CONTROL=<azure blob container name>
 MICROSOFT_APP_ID=<GUID>
 MICROSOFT_APP_PASSWORD=<PASS>
 BOTNAME=<bot loaded by default>
@@ -60,7 +59,6 @@ MICROSOFT_APP_PASSWORD=<the pass>
 botId=BotId
 BOTNAME=bot1
 LOGTABLE=botlog
-BOTFLOW_CONTAINER_CONTROL=botcontrol
 ~~~~
 
 ### SAMPLE INIT FILES
