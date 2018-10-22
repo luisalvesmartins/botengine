@@ -70,11 +70,17 @@ function init() {
 
   botConnection.activity$
     .filter(function (activity) {
-      console.log("RECEIVED:" + activity.type + "-" + activity.name);
       return activity.type === 'event' && activity.name === 'activity_update';
     })
     .subscribe(function (activity) {
       console.log('"activity_update" received with value: ' + activity.value);
+      if (activity.botname)
+      {
+        if (activity.botname!=document.all("txtBotName").value){
+          document.all("txtBotName").value=activity.botname;
+          load();
+        }
+      }
       onDrawingEvent(activity.value);
     });
 

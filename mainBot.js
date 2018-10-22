@@ -116,12 +116,12 @@ class mainBot {
 		}
 		else
 		if (context.activity.type === 'event') {
-			console.log("EVENT");
 			if (context.activity.name=="playFromStep")
 			{
 				console.log("botname:" + context.activity.botname)
+				botName=context.activity.botname;
 				console.log("value" + context.activity.value)
-				await this.state.setBotName(context.activity.botname);
+				await this.state.setBotName(botName);
 
 				var myBot = await lambotenginecore.AsyncPromiseReadBotFromAzure(storage,botName + ".bot");
 				var botPointer=lambotenginecore.getBotPointerIndexFromKey(myBot,context.activity.value);

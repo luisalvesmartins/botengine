@@ -297,7 +297,7 @@ module.exports={
                 break;
         }
         //BACKCHANNEL EVENT TO SYNCH WITH HTML
-        await context.sendActivity({type:"event",name:"activity_update",value:myBot[botPointer].key});
+        await context.sendActivity({type:"event",name:"activity_update",value:myBot[botPointer].key,botname:botName});
     },
 
     replaceVars:function(messageToDisplay, UserActivityResults){
