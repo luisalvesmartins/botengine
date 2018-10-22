@@ -7,7 +7,6 @@
   <link href="style.css" rel="stylesheet" />
   <link href="https://cdn.botframework.com/botframework-webchat/latest/botchat.css" rel="stylesheet" />
   <script src="go.js"></script>
-  <script src="socket.io.js"></script>
 	<script src="activities.js"></script>
   <script src="https://cdn.botframework.com/botframework-webchat/latest/botchat.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -54,12 +53,12 @@
 <script>
 //GOJS
 var myDiagram;
-function init() {
-//BOT
-  const botConnection = new BotChat.DirectLine({
+const botConnection = new BotChat.DirectLine({
     secret: 'cTBOQNhBL0Q.cwA.qqs.beYquvndtprLvS8wcbJE0xQQm1T9AKnoC5WS7AdrURg',
   });
 
+function init() {
+//BOT
   BotChat.App({
     botConnection: botConnection,
     // locale: 'es-es', // override locale to Spanish
@@ -78,9 +77,8 @@ function init() {
       console.log('"activity_update" received with value: ' + activity.value);
       onDrawingEvent(activity.value);
     });
-  
 
-
+    //GOJS
   var $ = go.GraphObject.make;  // for conciseness in defining templates
 
     myDiagram =

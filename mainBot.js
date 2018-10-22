@@ -49,6 +49,7 @@ class mainBot {
 				"\n\nPress the Start Sync button and enter the Session GUID\n\n" + session + "\n\n in the prompt.\n\nUse #BOT <name> to change, #DATA to display collected data");
 		} else
 		if (context.activity.type === 'message') {
+			await context.sendActivity({ type: 'typing' });
 			var myBot = await lambotenginecore.AsyncPromiseReadBotFromAzure(storage,botName + ".bot");
 
 			var botPointer= await this.state.getBotPointer();
@@ -112,6 +113,24 @@ class mainBot {
             await lambotenginecore.RenderConversationThread(context, myBot,io,this.state)
 
 			await this.state.saveChanges();
+		}
+		else
+		if (context.activity.type === 'event') {
+			console.log("EVENT");
+			if (context.activity.name=="playFromStep")
+			{
+				console.log("botname:" + context.activity.botname)
+				console.log("value" + context.activity.value)
+				await this.state.setBotName(context.activity.botname);
+
+				var myBot = await lambotenginecore.AsyncPromiseReadBotFromAzure(storage,botName + ".bot");
+				var botPointer=lambotenginecore.getBotPointerIndexFromKey(myBot,context.activity.value);
+
+				await this.state.setBotName(context.activity.botname);
+				await this.state.setBotPointer(botPointer,m);
+				await this.state.saveChanges();
+				await lambotenginecore.RenderConversationThread(context, myBot,io, this.state);
+			}
 		}
 	}
 }
