@@ -73,7 +73,7 @@ function init() {
     .subscribe(function (activity) {
       console.log('"activity_update" received with value: ' + activity.value);
       if (activity.value.botName.toLowerCase()!=document.all("txtBotName").value.toLowerCase()){
-        document.all("txtBotName").value=activity.botname;
+        document.all("txtBotName").value=activity.value.botname;
         load();
       }
       onDrawingEvent(activity.value.key);
