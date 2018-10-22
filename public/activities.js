@@ -2,39 +2,6 @@
 var lastSel=0;
 var autoRefresh=false;
 var conversationReference=undefined;
-var txtSession="";
-function StartSync() {
-  txtSession=prompt("Session GUID",txtSession);
-
-  document.all("btnStartSync").style.display="none";
-  document.all("btnStopSync").style.display="inline-block";
-  autoRefresh=true;
-  Sync();
-}
-function StopSync(){
-  document.all("btnStopSync").style.display="none";
-  document.all("btnStartSync").style.display="inline-block";
-  autoRefresh=false;
-}
-function Sync(){
-  // if (!conversationReference)
-  // {
-  //   $.get("/api/botcontrol?session=" + txtSession, function( data ) {
-  //     conversationReference=data;
-  //     setTimeout(Sync,2000);
-  //   })
-  //   .fail(function(error) {
-  //     console.log(error)
-  //   });
-  // }
-  // else
-  // {
-  //   var socket = io();
-  //   socket.emit('session', {session:txtSession, conversationReference:conversationReference});
-  //   socket.on('updateDesigner', onDrawingEvent);
-  //   socket.on('loadBot', onLoadBotEvent);
-  // }
-}
 function onLoadBotEvent(data){
   document.all("txtBotName").value=data;
   load();
@@ -55,30 +22,11 @@ function PlayStep(){
       from: { id: 'me' },
       name: 'playFromStep',
       type: 'event',
-      value: myDiagram.selection.first().key,
-      botname: document.all("txtBotName").value
+      value: {botName: document.all("txtBotName").value, key:myDiagram.selection.first().key}
     })
     .subscribe(function (id) {
       console.log('"playFromStep" sent');
     });
-
-    //console.log(myDiagram.selection.first().key);
-      // $.get("/api/botcontrol?session=" + txtSession, function( data ) {
-      //   conversationReference=data;
-
-      //   $.get( "/api/playStep?key=" + myDiagram.selection.first().key + "&bot=" + document.all("txtBotName").value + "&session=" + txtSession + "&cr=" + conversationReference, function( data ) {
-      //   })
-      //   .fail(function(error) {
-      //     console.log(error)
-      //     alert( "error doing the sync" );
-      //   });
-
-
-      // })
-      // .fail(function(error) {
-      //   console.log(error)
-      // });
-
   }
 }
 //#endregion

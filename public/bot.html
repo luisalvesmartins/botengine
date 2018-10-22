@@ -24,8 +24,6 @@
           <button onclick="newBot()">New</button>
           <button id="SaveButton" onclick="save(true)">Save</button>
           <button onclick="load()">Load</button>
-          <button id=btnStartSync onclick="StartSync()">Start Sync</button>
-          <button id=btnStopSync style="display:none" onclick="StopSync()">Disconnect</button>
           <button onclick="PlayStep()">Play From Step</button>
           Bot Name:
           <input type="text" id="txtBotName" value=""/>
@@ -74,14 +72,11 @@ function init() {
     })
     .subscribe(function (activity) {
       console.log('"activity_update" received with value: ' + activity.value);
-      if (activity.botname)
-      {
-        if (activity.botname!=document.all("txtBotName").value){
-          document.all("txtBotName").value=activity.botname;
-          load();
-        }
+      if (activity.value.botName.toLowerCase()!=document.all("txtBotName").value.toLowerCase()){
+        document.all("txtBotName").value=activity.botname;
+        load();
       }
-      onDrawingEvent(activity.value);
+      onDrawingEvent(activity.value.key);
     });
 
     //GOJS
