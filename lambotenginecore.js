@@ -217,6 +217,7 @@ module.exports={
         messageToDisplay=this.replaceVars(messageToDisplay,UserActivityResults);
         this.log("THREAD:" + currentThread.type);
         var messageToSpeak=messageToDisplay;
+
         switch (currentThread.type) {
             case "CHOICE":
                 await context.sendActivity(this.getSuggestedActions(messageToDisplay,currentThread.next));
@@ -295,6 +296,8 @@ module.exports={
                 botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,io,state);
                 break;
         }
+        //BACKCHANNEL EVENT TO SYNCH WITH HTML
+        await context.sendActivity({type:"event",name:"activity_update",value:myBot[botPointer].key});
     },
 
     replaceVars:function(messageToDisplay, UserActivityResults){
@@ -313,7 +316,7 @@ module.exports={
           context = context[namespaces[i]];
         }
         return context[func].apply(context, args);
-      },
+    },
 
     WriteBotControl:function(storage,session, savedAddress){
         var b=JSON.stringify(savedAddress);
