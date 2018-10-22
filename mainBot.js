@@ -17,7 +17,7 @@ class mainBot {
 
     }
 
-	async onTurn(context,io){
+	async onTurn(context){
 		this.state.context=context;
 		var botName = await this.state.getBotName();
 		if (!botName){
@@ -68,9 +68,10 @@ class mainBot {
 				myBot = await lambotenginecore.AsyncPromiseReadBotFromAzure(storage,botName + ".bot");
 				botPointer=lambotenginecore.getBotPointerOfStart(myBot);
                 await this.state.setBotPointer(botPointer,myBot[botPointer].key);
-				io.in(session).emit('loadBot',botName);
 
 				await context.sendActivity("Bot changed to " + botName)
+
+				await context.sendActivity({type:"event",name:"activity_update",value:{key:myBot[botPointer].key,botName:botName}});
 
 				return;
 			}
@@ -108,9 +109,9 @@ class mainBot {
 				}
 			});
             
-			await lambotenginecore.PreProcessing(this.state,myBot,botPointer,context.activity.text,io)
+			await lambotenginecore.PreProcessing(this.state,myBot,botPointer,context.activity.text)
 
-            await lambotenginecore.RenderConversationThread(context, myBot,io,this.state)
+            await lambotenginecore.RenderConversationThread(context, myBot,this.state)
 
 			await this.state.saveChanges();
 		}
@@ -118,16 +119,17 @@ class mainBot {
 		if (context.activity.type === 'event') {
 			if (context.activity.name=="playFromStep")
 			{
-				console.log("value" + context.activity.value)
+				console.log("VALUE")
+				console.log(context.activity.value)
 				botName=context.activity.value.botName;
 				await this.state.setBotName(botName);
 
 				var myBot = await lambotenginecore.AsyncPromiseReadBotFromAzure(storage,botName + ".bot");
-				var botPointer=lambotenginecore.getBotPointerIndexFromKey(myBot,context.activity.value.key);
+				var botPointer=lambotenginecore.getBotPointerIndexFromKey(myBot, context.activity.value.key);
 
-				await this.state.setBotPointer(botPointer,m);
+				await this.state.setBotPointer(botPointer,context.activity.value.key);
 				await this.state.saveChanges();
-				await lambotenginecore.RenderConversationThread(context, myBot,io, this.state);
+				await lambotenginecore.RenderConversationThread(context, myBot, this.state);
 			}
 		}
 	}

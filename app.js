@@ -3,7 +3,6 @@ var lambotenginecore=require('./lambotenginecore');
 const { BotFrameworkAdapter, ConsoleAdapter, ConversationState, MemoryStorage } = require('botbuilder');
 //const { TableStorage } = require('botbuilder-azure');
 const restify = require('restify');
-const socketio=require('socket.io');
 const { mainBot } = require('./mainBot');
 const { stateObject } = require('./stateObject');
 var querystring = require('querystring');
@@ -87,14 +86,6 @@ else
     let server = restify.createServer();
     server.listen(process.env.port || process.env.PORT || 3978, function () {
         console.log(`${server.name} listening to ${server.url}`);
-	});
-	io=socketio.listen(server.server);
-	io.sockets.on('connection', function(client){
-		client.on("session",function(data){
-			console.log("Connected:" + data.session)
-			client.join(data.session);
-		})
-		client.on('disconnect', function(){});
 	});
 		
 	//SITE

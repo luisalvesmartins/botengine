@@ -37,7 +37,7 @@ class botrunner {
             if (botPointer==-1){
                 botPointer=lambotenginecore.getBotPointerOfStart(myBot);
                 await this.state.setBotPointer(botPointer,myBot[botPointer].key);
-                botPointer=await lambotenginecore.MoveBotPointer(myBot,botPointer,context.activity.text,this.state.getUserActivityResults(),null,this.state);
+                botPointer=await lambotenginecore.MoveBotPointer(myBot,botPointer,context.activity.text,this.state.getUserActivityResults(),this.state);
             }
             
     
@@ -66,7 +66,7 @@ class botrunner {
 
             await lambotenginecore.PreProcessing(this.state,myBot,botPointer,context.activity.text)
 
-            await lambotenginecore.RenderConversationThread(context, myBot,null,this.state)
+            await lambotenginecore.RenderConversationThread(context, myBot,this.state)
     
             await this.state.saveChanges();
         }

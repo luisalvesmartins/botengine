@@ -19,7 +19,6 @@
     "dotenv": "^6.0.0",
     "node-eval": "^2.0.0",
     "request-promise": "^4.2.2",
-    "restify": "^6.4.0",
-    "socketio": "^1.0.0"
+    "restify": "^6.4.0"
   }
 }

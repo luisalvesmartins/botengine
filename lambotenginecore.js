@@ -74,7 +74,7 @@ module.exports={
         return MessageFactory.suggestedActions(suggestedActions, title);
     },
     
-    MoveBotPointer:async function(myBot,botPointer,lastMessage,UserActivityResults,io,state)
+    MoveBotPointer:async function(myBot,botPointer,lastMessage,UserActivityResults,state)
     {
         //MOVENEXT
         //IF THIS IS LUIS, need to process it first
@@ -153,11 +153,7 @@ module.exports={
             
         }
         await state.setBotPointer(botPointer,myBot[botPointer].key);
-    
-        //SEND THE MESSAGE TO THE HTML CLIENT TO UPDATE THE POSITION
-        if (io)
-            io.in(await state.getSession()).emit('updateDesigner',myBot[botPointer].key);
-
+        
         return botPointer;
     },
     
@@ -208,7 +204,7 @@ module.exports={
         console.log(" ERROR:" + message);
     },
     
-    RenderConversationThread: async function (context, myBot,io ,state)
+    RenderConversationThread: async function (context, myBot ,state)
     {
         var UserActivityResults=await state.getUserActivityResults();
         var botPointer = await state.getBotPointer();
@@ -223,9 +219,9 @@ module.exports={
                 await context.sendActivity(this.getSuggestedActions(messageToDisplay,currentThread.next));
                 break;
             case "IF":
-                botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,io,state);
+                botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,state);
     
-                await this.RenderConversationThread(context, myBot,io,state);
+                await this.RenderConversationThread(context, myBot,state);
                 break;
             case "INPUT":
                 await context.sendActivity(messageToDisplay, messageToSpeak, 'expectingInput');
@@ -251,13 +247,13 @@ module.exports={
                         this.executeFunctionByName(currentThread.parAPI,global,parCleaned);
                         break;
                 }
-                botPointer=await this.MoveBotPointer(myBot,botPointer,result,UserActivityResults,io,state);
+                botPointer=await this.MoveBotPointer(myBot,botPointer,result,UserActivityResults,state);
                 break;
             case "MESSAGE":
                 await context.sendActivity(messageToDisplay, messageToSpeak, 'expectingInput');
-                botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,io,state);
+                botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,state);
         
-                await this.RenderConversationThread(context, myBot,io,state);
+                await this.RenderConversationThread(context, myBot,state);
                 break;
             case "QNA":
                 const qnaMaker = new QnAMaker(
@@ -279,21 +275,21 @@ module.exports={
                     }
                 }
 
-                botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,io,state);
+                botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,state);
         
-                await this.RenderConversationThread(context, myBot,io,state);
+                await this.RenderConversationThread(context, myBot,state);
                 break;
             case "START":
                 await context.sendActivity(messageToDisplay, messageToSpeak, 'expectingInput');
     
-                botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,io,state);
+                botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,state);
         
-                await this.RenderConversationThread(context, myBot,io,state);
+                await this.RenderConversationThread(context, myBot,state);
                 break;
         
             default:
                 await context.sendActivity(messageToDisplay, messageToSpeak, 'expectingInput');
-                botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,io,state);
+                botPointer=await this.MoveBotPointer(myBot,botPointer,context.activity.text,UserActivityResults,state);
                 break;
         }
         //BACKCHANNEL EVENT TO SYNCH WITH HTML
@@ -341,7 +337,7 @@ module.exports={
         }
     },
     
-    PreProcessing:async function(state,myBot,botPointer,messageText,io){
+    PreProcessing:async function(state,myBot,botPointer,messageText){
         var userActivityResults=await state.getUserActivityResults();
     
         //STORE THE ACTUAL RESULT IN THE VARIABLE
@@ -353,7 +349,7 @@ module.exports={
         }
     
         //MOVE IT TO THE NEXT
-        await this.MoveBotPointer(myBot,botPointer,messageText,userActivityResults,io,state);
+        await this.MoveBotPointer(myBot,botPointer,messageText,userActivityResults,state);
     }
     
     };
