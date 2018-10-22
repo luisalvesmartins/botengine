@@ -54,6 +54,7 @@ class mainBot {
 				myBot = await lambotenginecore.AsyncPromiseReadBotFromAzure(storage,botName + ".bot");
 				botPointer=lambotenginecore.getBotPointerOfStart(myBot);
                 await this.state.setBotPointer(botPointer,myBot[botPointer].key);
+				await this.state.saveChanges();
 
 				await context.sendActivity("Bot changed to " + botName)
 
