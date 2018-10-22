@@ -71,9 +71,8 @@ function init() {
       return activity.type === 'event' && activity.name === 'activity_update';
     })
     .subscribe(function (activity) {
-      console.log('"activity_update" received with value: ' + activity.value);
       if (activity.value.botName.toLowerCase()!=document.all("txtBotName").value.toLowerCase()){
-        document.all("txtBotName").value=activity.value.botname;
+        document.all("txtBotName").value=activity.value.botName;
         load();
       }
       onDrawingEvent(activity.value.key);
@@ -123,7 +122,6 @@ function init() {
     });
 
 	myDiagram.addDiagramListener("ChangedSelection", function(diagramEvent) {
-		//console.log(diagramEvent);
     var node = myDiagram.selection.first();
     if (node){
       var data = node.data;

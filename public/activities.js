@@ -37,7 +37,6 @@ function PlayStep(){
     saveDiagramProperties();  // do this first, before writing to JSON
     document.getElementById("mySavedModel").value = myDiagram.model.toJson();
     myDiagram.isModified = false;
-	//console.log(document.getElementById("mySavedModel").value)
     $.post("/api/bot", { key: document.all("txtBotName").value, botflow: document.getElementById("mySavedModel").value } )
     .done(alert("SAVED"))
     .fail(function(error) {
