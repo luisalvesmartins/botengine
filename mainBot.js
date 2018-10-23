@@ -65,6 +65,23 @@ class mainBot {
 			if (context.activity.text.toUpperCase().startsWith("#DATA"))
 			{
 				await context.sendActivity("Data collected: " + JSON.stringify(userActivityResults));
+				await context.sendActivity({type:"event",name:"data_show",value:userActivityResults});
+
+				//SEND DATA TO CLIENT
+				// var query = new storage.TableQuery()
+  				// 	.select(['description', 'botPointerKey'])
+				// 	.where('PartitionKey eq ?', context.activity.channelId)
+				// 	.and('RowKey ge ?', context.activity.conversation.id+ "|")
+				// 	.and('RowKey le ?', context.activity.conversation.id+ "|X")
+				// 	.and('botName eq ?', botName);
+				// 	console.log(query)
+				// this.tableSvc.queryEntities(process.env.LOGTABLE,query, null, async function(error, result, response) {
+				// 	if(!error) {
+				// 		console.log(result.entries);
+				// 		// query was successful
+				// 		await context.sendActivity({type:"event",name:"data_show",value:result.entries});
+				// 	}
+				// 	});					
 				return;
 			}
 			if (context.activity.text.toUpperCase()=="#DEBUG")
@@ -76,9 +93,10 @@ class mainBot {
 			//ADD LOG 
 			var task = {
 				PartitionKey: entGen.String(context.activity.channelId),
-				RowKey: entGen.String(context.activity.id + "|" + context.activity.conversation.id),
-				description: entGen.String(context.activity.text),
+				RowKey: entGen.String(context.activity.conversation.id+ "|" + context.activity.id),
+				text: entGen.String(context.activity.text),
 				botPointer: entGen.Int32(botPointer),
+				botPointerKey: entGen.Int32(myBot[botPointer].key),
 				botName: entGen.String(botName)
             };
 			this.tableSvc.insertEntity(process.env.LOGTABLE || 'botlog',task, function (error, result, response) {

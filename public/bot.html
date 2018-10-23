@@ -27,6 +27,7 @@
           <button onclick="PlayStep()">Play From Step</button>
           Bot Name:
           <input type="text" id="txtBotName" value=""/>
+          <button onclick="showDataNodes()">Show Data</button>
         </div>
         <div style="padding-top:60px;width: 100%; height:100%; display: flex; justify-content: space-between">
           <div id="myPaletteDiv" style="width: 105px; margin-right: 2px; background-color: whitesmoke; border: solid 1px black"></div>
@@ -342,7 +343,35 @@ function init() {
             { points: new go.List(go.Point).addAll([new go.Point(0, 0), new go.Point(30, 0), new go.Point(30, 40), new go.Point(60, 40)]) }
           ])
         });
+  
+}
+
+function showDataNodes(){
+  var forelayer = myDiagram.findLayer("Foreground");
+  myDiagram.startTransaction("make new node");
+  var total=myDiagram.model.nodeDataArray.length;
+  for (let index = 0; index < total; index++) {
+    const element = myDiagram.model.nodeDataArray[index];
+    var b=go.Point.parse(element.loc).offset(20,20);
+    if ("#MESSAGE#START#".indexOf("#" + element.type + "#")<0)
+      myDiagram.model.addNodeData(    
+        {"text":"Starting the bot", 
+        "fill":"lightyellow", "key":1000, "loc":go.Point.stringify(b), "angle":0, "size":"100 50", 
+        "type":"DATASHOW"}
+      );
+
+    console.log(element);
   }
+  myDiagram.commitTransaction("make new node");
+}
+function removeDataNodes(){
+    //REMOVE DATA NODES
+    var total=myDiagram.model.nodeDataArray.length;
+  for (let index = myDiagram.model.nodeDataArray.length-1; index >=0 ; index--) {
+    if (element.type=="DATASHOW")
+      myDiagram.model.removeNodeData(myDiagram.model.nodeDataArray[index]);
+  }
+}
 
 
   function TopRotatingTool() {

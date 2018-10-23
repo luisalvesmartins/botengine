@@ -12,12 +12,20 @@
             "name": "http://localhost:3979"
         },
         {
-            "id": "c3eb9a90-ac57-11e8-a1eb-6d6deb0aed2a",
-            "name": "http://lambotenginecortana.azurewebsites.net",
-            "type": "endpoint",
             "appId": "4419e124-95e7-469b-a0fe-c2234491b5cb",
+            "id": "c3eb9a90-ac57-11e8-a1eb-6d6deb0aed2a",
+            "type": "endpoint",
             "appPassword": "!Y{0K/6H^1H3.o54",
-            "endpoint": "https://lambotenginecortana.azurewebsites.net/api/messages"
+            "endpoint": "https://lambotenginecortana.azurewebsites.net/api/messages",
+            "name": "http://lambotenginecortana.azurewebsites.net"
+        },
+        {
+            "appId": "",
+            "id": "1c5f7b20-cbec-11e8-9e8f-d74a4ec3dde4",
+            "type": "endpoint",
+            "appPassword": "",
+            "endpoint": "http://localhost:3978",
+            "name": "bot3978"
         }
     ]
 }
