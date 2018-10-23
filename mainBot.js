@@ -30,7 +30,7 @@ class mainBot {
 
 		var userActivityResults=await this.state.getUserActivityResults();
       
-		if (context.activity.type === 'conversationUpdate' && context.activity.membersAdded[0].name !== 'Bot') {
+		if (context.activity.type === 'conversationUpdate' && context.activity.membersAdded[0].id !== 'botid') {
 			await context.sendActivity(`## Welcome to the Designer Bot!\n\nCurrent bot: ` + botName.replace(".bot","") + "\n\n"  + 
 				"Use #BOT <name> to change, #DATA to display collected data");
 		} else
@@ -66,22 +66,7 @@ class mainBot {
 			{
 				await context.sendActivity("Data collected: " + JSON.stringify(userActivityResults));
 				await context.sendActivity({type:"event",name:"data_show",value:userActivityResults});
-
-				//SEND DATA TO CLIENT
-				// var query = new storage.TableQuery()
-  				// 	.select(['description', 'botPointerKey'])
-				// 	.where('PartitionKey eq ?', context.activity.channelId)
-				// 	.and('RowKey ge ?', context.activity.conversation.id+ "|")
-				// 	.and('RowKey le ?', context.activity.conversation.id+ "|X")
-				// 	.and('botName eq ?', botName);
-				// 	console.log(query)
-				// this.tableSvc.queryEntities(process.env.LOGTABLE,query, null, async function(error, result, response) {
-				// 	if(!error) {
-				// 		console.log(result.entries);
-				// 		// query was successful
-				// 		await context.sendActivity({type:"event",name:"data_show",value:result.entries});
-				// 	}
-				// 	});					
+			
 				return;
 			}
 			if (context.activity.text.toUpperCase()=="#DEBUG")

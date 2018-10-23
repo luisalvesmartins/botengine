@@ -27,7 +27,6 @@
           <button onclick="PlayStep()">Play From Step</button>
           Bot Name:
           <input type="text" id="txtBotName" value=""/>
-          <button onclick="showDataNodes()">Show Data</button>
         </div>
         <div style="padding-top:60px;width: 100%; height:100%; display: flex; justify-content: space-between">
           <div id="myPaletteDiv" style="width: 105px; margin-right: 2px; background-color: whitesmoke; border: solid 1px black"></div>
@@ -69,14 +68,19 @@ function init() {
 
   botConnection.activity$
     .filter(function (activity) {
-      return activity.type === 'event' && activity.name === 'activity_update';
+      return activity.type === 'event';
     })
     .subscribe(function (activity) {
-      if (activity.value.botName.toLowerCase()!=document.all("txtBotName").value.toLowerCase()){
-        document.all("txtBotName").value=activity.value.botName;
-        load();
+      if (activity.name === 'activity_update'){
+        if (activity.value.botName.toLowerCase()!=document.all("txtBotName").value.toLowerCase()){
+          document.all("txtBotName").value=activity.value.botName;
+          load();
+        }
+        onDrawingEvent(activity.value.key);
       }
-      onDrawingEvent(activity.value.key);
+      if (activity.name === 'data_show'){
+        showDataNodes(activity.value);
+      }
     });
 
     //GOJS
@@ -205,6 +209,7 @@ function init() {
               strokeWidth: 2
             },
             new go.Binding("figure"),
+            new go.Binding("opacity"),
             new go.Binding("fill")),
           $(go.TextBlock,
             {
@@ -345,34 +350,6 @@ function init() {
         });
   
 }
-
-function showDataNodes(){
-  var forelayer = myDiagram.findLayer("Foreground");
-  myDiagram.startTransaction("make new node");
-  var total=myDiagram.model.nodeDataArray.length;
-  for (let index = 0; index < total; index++) {
-    const element = myDiagram.model.nodeDataArray[index];
-    var b=go.Point.parse(element.loc).offset(20,20);
-    if ("#MESSAGE#START#".indexOf("#" + element.type + "#")<0)
-      myDiagram.model.addNodeData(    
-        {"text":"Starting the bot", 
-        "fill":"lightyellow", "key":1000, "loc":go.Point.stringify(b), "angle":0, "size":"100 50", 
-        "type":"DATASHOW"}
-      );
-
-    console.log(element);
-  }
-  myDiagram.commitTransaction("make new node");
-}
-function removeDataNodes(){
-    //REMOVE DATA NODES
-    var total=myDiagram.model.nodeDataArray.length;
-  for (let index = myDiagram.model.nodeDataArray.length-1; index >=0 ; index--) {
-    if (element.type=="DATASHOW")
-      myDiagram.model.removeNodeData(myDiagram.model.nodeDataArray[index]);
-  }
-}
-
 
   function TopRotatingTool() {
     go.RotatingTool.call(this);

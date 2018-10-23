@@ -34,6 +34,7 @@ function PlayStep(){
 //#region SAVE & LOAD
   // Show the diagram's model in JSON format that the user may edit
   function save(showConfirmation) {
+    removeDataNodes();
     saveDiagramProperties();  // do this first, before writing to JSON
     document.getElementById("mySavedModel").value = myDiagram.model.toJson();
     myDiagram.isModified = false;
@@ -69,6 +70,43 @@ function PlayStep(){
     if (pos) myDiagram.initialPosition = go.Point.parse(pos);
   }
 //#endregion
+
+
+//#region SHOW DATA
+function showDataNodes(data){
+  removeDataNodes();
+  myDiagram.startTransaction("make new node");
+  var total=myDiagram.model.nodeDataArray.length;
+  for (let index = 0; index < total; index++) {
+    const element = myDiagram.model.nodeDataArray[index];
+    if (element.parVar!="")
+    {
+      var text=data[element.parVar];
+      if (text!="" && text){
+        var b=go.Point.parse(element.loc).offset(20,20);
+        if ("#MESSAGE#START#".indexOf("#" + element.type + "#")<0)
+          myDiagram.model.addNodeData(    
+            {"text":text, 
+            "fill":"#FFFFE0", "loc":go.Point.stringify(b), "angle":0, "size":"100 50", 
+            "opacity":0.7,
+            "type":"DATASHOW"}
+          );
+      }
+
+    }
+  }
+  myDiagram.commitTransaction("make new node");
+}
+function removeDataNodes(){
+  //REMOVE DATA NODES
+  var total=myDiagram.model.nodeDataArray.length;
+  for (let index = myDiagram.model.nodeDataArray.length-1; index >=0 ; index--) {
+    const element = myDiagram.model.nodeDataArray[index];
+    if (element.type=="DATASHOW")
+      myDiagram.model.removeNodeData(myDiagram.model.nodeDataArray[index]);
+  }
+}
+//endregion
 
 //#region PARAMETERS
   function parSave(){

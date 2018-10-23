@@ -8,14 +8,17 @@ When the activity changes in the bot, it reflects in the designer.
 
 You can jump to any activity and play the conversation from there.
 
+When you enter #DATA in the conversation window, the data is displayed as overlay in the activity where it was entered.
+![ShowData](/images/showdata.png "Showing Data")
+
 ----
 
 ## FEATURES
 
 One image and one video are worth a million bytes:
-![Features](/features.png "Features")
+![Features](/images/features.png "Features")
 
-![Features](/featuresdemo.gif "Features Video")
+![Features](/images/featuresdemo.gif "Features Video")
 
 ### USE LUIS, QNAMAKER, APICALL OR YOUR OWN ACTIVITY BLOCKS
 
