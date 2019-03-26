@@ -1,6 +1,9 @@
 # botengine
 
-Design and debug visually your bot conversations. Using Azure, Node, Bot Framework v4 (GA), GoJS and bot backchannel to keep the synchronization with the frontend.
+*Note*: If you are looking for a bot conversation designer that enables immediate conversation design and test and then produce code in C# or NodeJS, look at http://github.com/luisalvesmartins/botconversationdesigner 
+
+
+Design and debug visually your bot conversations. Using Azure, Node, Bot Framework v4, GoJS and bot backchannel to keep the synchronization with the frontend.
 
 The conversation is synchronized with the visual designer:
 When a bot is loaded in the conversation, it is loaded in the designer. 
